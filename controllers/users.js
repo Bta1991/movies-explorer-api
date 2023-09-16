@@ -8,31 +8,6 @@ const NotFoundError = require('../errors/not-found-err');
 const BadRequestError = require('../errors/bad-request-err');
 const ConflictError = require('../errors/conflict-err');
 
-exports.getAllUsers = async (req, res, next) => {
-  try {
-    const users = await User.find();
-    return res.json(users);
-  } catch (err) {
-    return next(new Error('Произошла ошибка при получении пользователей'));
-  }
-};
-
-exports.getUserById = async (req, res, next) => {
-  const { userId } = req.params;
-  try {
-    const user = await User.findById(userId);
-    if (!user) {
-      return next(new NotFoundError('Такого пользователя нет'));
-    }
-    return res.json(user);
-  } catch (err) {
-    if (err.name === 'CastError') {
-      return next(new BadRequestError('Некорректный ID пользователя'));
-    }
-    return next(new Error('Произошла ошибка при получении пользователя по ID'));
-  }
-};
-
 exports.getCurrentUser = async (req, res, next) => {
   const userId = req.user._id;
   try {
@@ -54,13 +29,13 @@ exports.getCurrentUser = async (req, res, next) => {
 };
 
 exports.updateUserProfile = async (req, res, next) => {
-  const { name, about } = req.body;
+  const { name, email } = req.body;
   const userId = req.user._id;
 
   try {
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { name, about },
+      { name, email },
       { new: true, runValidators: true },
     );
     if (!updatedUser) {
@@ -80,36 +55,9 @@ exports.updateUserProfile = async (req, res, next) => {
   }
 };
 
-exports.updateUserAvatar = async (req, res, next) => {
-  const { avatar } = req.body;
-  const userId = req.user._id;
-
-  try {
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { avatar },
-      { new: true, runValidators: true },
-    );
-    if (!updatedUser) {
-      return next(new NotFoundError('Такого пользователя нет'));
-    }
-    return res.json(updatedUser);
-  } catch (err) {
-    if (err.name === 'ValidationError') {
-      return next(new BadRequestError('Переданы некорректные данные'));
-    }
-    if (err.name === 'CastError') {
-      return next(new BadRequestError('Некорректный ID пользователя'));
-    }
-    return next(
-      new Error('Произошла ошибка при обновлении аватара пользователя'),
-    );
-  }
-};
-
 exports.createUser = async (req, res, next) => {
   const {
-    email, password, name, about, avatar,
+    email, password, name,
   } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -117,8 +65,6 @@ exports.createUser = async (req, res, next) => {
       email,
       password: hashedPassword,
       name,
-      about,
-      avatar,
     });
     newUser.password = undefined;
     return res.status(201).json(newUser);
@@ -155,7 +101,6 @@ exports.login = async (req, res, next) => {
       maxAge: 3600000 * 24 * 7,
     });
     return res.send({ message: 'Авторизация успешна' });
-    // return res.send({ token });
   } catch (err) {
     if (err.name === 'ValidationError') {
       return next(

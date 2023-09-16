@@ -30,7 +30,7 @@ const limiter = rateLimit({
 // включаем внешние мидлверы
 app.use(limiter);
 app.use(helmet());
-app.use(cors({ origin: ['http://aaa.nomoredomainsicu.ru', 'https://aaa.nomoredomainsicu.ru', 'http://localhost:3000'], credentials: true }));
+app.use(cors({ origin: ['http://diplom.nomoredomainsrocks.ru', 'https://diplom.nomoredomainsrocks.ru', 'http://localhost:3000'], credentials: true }));
 app.use(cookieParser());
 
 // мидлверы для разбора JSON-тела запросов
