@@ -4,7 +4,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const cors = require('cors');
+// const cors = require('cors');
 const { errors } = require('celebrate');
 
 require('dotenv').config();
@@ -30,7 +30,8 @@ const limiter = rateLimit({
 // включаем внешние мидлверы
 app.use(limiter);
 app.use(helmet());
-app.use(cors({ origin: ['http://diplom.nomoredomainsrocks.ru', 'https://diplom.nomoredomainsrocks.ru', 'http://localhost:3000'], credentials: true }));
+// cors отключено пока нет фронтенда
+// app.use(cors({ origin: ['http://diplom.nomoredomainsrocks.ru', 'https://diplom.nomoredomainsrocks.ru', 'http://localhost:3000'], credentials: true }));
 app.use(cookieParser());
 
 // мидлверы для разбора JSON-тела запросов
