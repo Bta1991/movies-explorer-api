@@ -2,9 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 const userController = require('../controllers/users'); //  путь к контроллеру пользователей
-const {
-  validateUpdateUser,
-} = require('../middlewares/validation-joi');
+const { validateUpdateUser } = require('../middlewares/validation-joi');
 
 // GET /me - возвращает информацию о текущем пользователе
 router.get('/me', userController.getCurrentUser);

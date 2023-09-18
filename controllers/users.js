@@ -33,7 +33,9 @@ exports.updateUserProfile = async (req, res, next) => {
   const userId = req.user._id;
 
   if (!name && !email) {
-    return next(new BadRequestError('Не указаны данные для обновления профиля'));
+    return next(
+      new BadRequestError('Не указаны данные для обновления профиля'),
+    );
   }
 
   try {
@@ -42,7 +44,9 @@ exports.updateUserProfile = async (req, res, next) => {
       const existingUser = await User.findOne({ email });
 
       if (existingUser && existingUser._id.toString() !== userId) {
-        return next(new BadRequestError('Пользователь с таким email уже существует'));
+        return next(
+          new BadRequestError('Пользователь с таким email уже существует'),
+        );
       }
     }
 
@@ -64,14 +68,14 @@ exports.updateUserProfile = async (req, res, next) => {
     if (err.name === 'CastError') {
       return next(new BadRequestError('Некорректный ID пользователя'));
     }
-    return next(new Error('Произошла ошибка при обновлении профиля пользователя'));
+    return next(
+      new Error('Произошла ошибка при обновлении профиля пользователя'),
+    );
   }
 };
 
 exports.createUser = async (req, res, next) => {
-  const {
-    email, password, name,
-  } = req.body;
+  const { email, password, name } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({
