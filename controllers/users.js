@@ -32,15 +32,30 @@ exports.updateUserProfile = async (req, res, next) => {
   const { name, email } = req.body;
   const userId = req.user._id;
 
+  if (!name && !email) {
+    return next(new BadRequestError('Не указаны данные для обновления профиля'));
+  }
+
   try {
+    // Проверка на уникальность email
+    if (email) {
+      const existingUser = await User.findOne({ email });
+
+      if (existingUser && existingUser._id.toString() !== userId) {
+        return next(new BadRequestError('Пользователь с таким email уже существует'));
+      }
+    }
+
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { name, email },
       { new: true, runValidators: true },
     );
+
     if (!updatedUser) {
-      return next(new NotFoundError('Такого пользователя нет'));
+      return next(new NotFoundError('Пользователь не найден'));
     }
+
     return res.json(updatedUser);
   } catch (err) {
     if (err.name === 'ValidationError') {
@@ -49,9 +64,7 @@ exports.updateUserProfile = async (req, res, next) => {
     if (err.name === 'CastError') {
       return next(new BadRequestError('Некорректный ID пользователя'));
     }
-    return next(
-      new Error('Произошла ошибка при обновлении профиля пользователя'),
-    );
+    return next(new Error('Произошла ошибка при обновлении профиля пользователя'));
   }
 };
 

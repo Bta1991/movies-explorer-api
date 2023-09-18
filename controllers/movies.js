@@ -4,10 +4,13 @@ const NotFoundError = require('../errors/not-found-err');
 const BadRequestError = require('../errors/bad-request-err');
 const ForbiddenError = require('../errors/forbidden-err');
 
-// Обработчик для получения всех сохраненных фильмов
+// Обработчик для получения всех сохраненных ПОЛЬЗОВАТЕЛЕМ фильмов
 exports.getAllMovies = async (req, res, next) => {
+  const userId = req.user._id;
+
   try {
-    const movies = await Movie.find();
+    // Находим все фильмы, у которых владелец совпадает с _id пользователя
+    const movies = await Movie.find({ owner: userId });
     return res.json(movies);
   } catch (err) {
     return next(new Error('Произошла ошибка при получении фильмов'));
@@ -30,6 +33,7 @@ exports.createMovie = async (req, res, next) => {
     nameEN,
   } = req.body;
   const owner = req.user._id;
+
   try {
     const newMovie = await Movie.create({
       country,

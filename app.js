@@ -1,6 +1,5 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -9,27 +8,19 @@ const { errors } = require('celebrate');
 
 require('dotenv').config();
 
+const rateLimit = require('./middlewares/rate-limit');
 const errorHandler = require('./middlewares/error-handler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const routes = require('./routes/routes');
 
-const { PORT = 3000, MONGO_DB = 'mongodb://127.0.0.1:27017/filmsdb' } =
+const { PORT = 3000, MONGO_DB = 'mongodb://127.0.0.1:27017/bitfilmsdb' } =
   process.env;
 
 const app = express();
 
-// лимитер для защиты от DDOS
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 1000, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-  message: 'Превышено количество запросов на сервер',
-});
-
 // включаем внешние мидлверы
-app.use(limiter);
-app.use(helmet());
+app.use(rateLimit); // лимитер для защиты от DDOS
+app.use(helmet()); // helmet заголовки для безопасности
 // cors отключено пока нет фронтенда
 // app.use(cors({ origin: ['http://diplom.nomoredomainsrocks.ru', 'https://diplom.nomoredomainsrocks.ru', 'http://localhost:3000'], credentials: true }));
 app.use(cookieParser());

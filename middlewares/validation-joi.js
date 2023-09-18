@@ -1,7 +1,7 @@
 const { celebrate, Joi } = require('celebrate');
 
 // Регулярное выражение для проверки ссылок
-// const linkValid = /^(https?:\/\/)(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[\w\-./#?&]*)*$/;
+const linkValid = /^(https?:\/\/)(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[\w\-./#?&]*)*$/;
 
 // Схема валидации для регистрации пользователя
 module.exports.signUpValidation = celebrate({
@@ -30,8 +30,8 @@ module.exports.validateUserId = celebrate({
 // Схема валидации для обновления информации о пользователе
 module.exports.validateUpdateUser = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    email: Joi.string().required().email(),
+    name: Joi.string().min(2).max(30), // .required() не обязательно обновить оба поля
+    email: Joi.string().email(),
   }),
 });
 
@@ -43,13 +43,12 @@ module.exports.validateCreateMovie = celebrate({
     duration: Joi.number().required(),
     year: Joi.string().required(),
     description: Joi.string().required(),
-    image: Joi.string().uri().required(),
-    trailerLink: Joi.string().uri().required(),
-    thumbnail: Joi.string().uri().required(),
+    image: Joi.string().required().pattern(linkValid),
+    trailerLink: Joi.string().required().pattern(linkValid),
+    thumbnail: Joi.string().required().pattern(linkValid),
     movieId: Joi.number().required(),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
-    owner: Joi.string().required().length(24).hex(),
   }),
 });
 
