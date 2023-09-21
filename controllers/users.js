@@ -39,17 +39,6 @@ exports.updateUserProfile = async (req, res, next) => {
   }
 
   try {
-    // Проверка на уникальность email
-    if (email) {
-      const existingUser = await User.findOne({ email });
-
-      if (existingUser && existingUser._id.toString() !== userId) {
-        return next(
-          new BadRequestError('Пользователь с таким email уже существует'),
-        );
-      }
-    }
-
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { name, email },
@@ -67,6 +56,11 @@ exports.updateUserProfile = async (req, res, next) => {
     }
     if (err.name === 'CastError') {
       return next(new BadRequestError('Некорректный ID пользователя'));
+    }
+    if (err.code === 11000) {
+      return next(
+        new ConflictError('Пользователь с таким email уже существует'),
+      );
     }
     return next(
       new Error('Произошла ошибка при обновлении профиля пользователя'),
