@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-// const cors = require('cors');
+const cors = require('cors');
 const { errors } = require('celebrate');
 
 require('dotenv').config();
@@ -22,7 +22,7 @@ const app = express();
 app.use(rateLimit); // лимитер для защиты от DDOS
 app.use(helmet()); // helmet заголовки для безопасности
 // cors отключено пока нет фронтенда
-// app.use(cors({ origin: ['http://diplom.nomoredomainsrocks.ru', 'https://diplom.nomoredomainsrocks.ru', 'http://localhost:3000'], credentials: true }));
+app.use(cors({ origin: ['http://diplom.nomoredomainsrocks.ru', 'https://diplom.nomoredomainsrocks.ru', 'http://localhost:3000'], credentials: true }));
 app.use(cookieParser());
 
 // мидлверы для разбора JSON-тела запросов
