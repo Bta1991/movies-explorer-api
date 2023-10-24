@@ -2,7 +2,7 @@ const { celebrate, Joi } = require('celebrate');
 
 // Регулярное выражение для проверки ссылок
 const linkValid =
-  /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/i;
+  /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g;
 
 // Схема валидации для регистрации пользователя
 module.exports.signUpValidation = celebrate({
