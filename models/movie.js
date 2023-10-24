@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 // Регулярное выражение для проверки ссылок
 const linkValid =
-  /^(https?:\/\/)(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[\w\-./#?&]*)*$/;
+  // eslint-disable-next-line no-useless-escape
+  /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/i;
 
 const movieSchema = new mongoose.Schema({
   country: {
