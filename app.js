@@ -13,7 +13,7 @@ const errorHandler = require('./middlewares/error-handler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const routes = require('./routes/routes');
 
-const { PORT = 3000, MONGO_DB = 'mongodb://127.0.0.1:27017/bitfilmsdb' } =
+const { PORT = 3002, MONGO_DB = 'mongodb://127.0.0.1:27017/bitfilmsdb' } =
   process.env;
 
 const app = express();
@@ -22,7 +22,7 @@ const app = express();
 app.use(rateLimit); // лимитер для защиты от DDOS
 app.use(helmet()); // helmet заголовки для безопасности
 // cors отключено пока нет фронтенда
-app.use(cors({ origin: ['http://diplom.nomoredomainsrocks.ru', 'https://diplom.nomoredomainsrocks.ru', 'http://localhost:3000'], credentials: true }));
+app.use(cors({ origin: ['http://diplom.nomoredomainsrocks.ru', 'https://diplom.nomoredomainsrocks.ru', 'http://localhost:3002'], credentials: true }));
 app.use(cookieParser());
 
 // мидлверы для разбора JSON-тела запросов
@@ -39,7 +39,7 @@ app.use(routes);
 mongoose
   .connect(MONGO_DB, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
-    // Слушаем 3000 порт
+    // Слушаем 3002 порт
     app.listen(PORT, () => {
       // eslint-disable-next-line no-console
       console.log(`App listening on port ${PORT}`);
